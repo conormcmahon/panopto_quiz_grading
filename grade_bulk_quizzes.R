@@ -19,7 +19,7 @@ all_quiz_results <- lapply(quiz_files,
                              return(read_csv(filepath, 
                                              col_types = cols()))
                            })
-# Reformat to a single data frame with all the quiz data
+# Reformat to a single data frame with all the quiz dat
 all_quiz_results <- bind_rows(all_quiz_results) %>%
   janitor::clean_names()
 
@@ -54,15 +54,19 @@ all_question_results <- bind_rows(all_question_results) %>%
   janitor::clean_names()
 
 
+# ------------------------------ Generate Summary Data and Output to Disk ------------------------------
+
 # Generate Summaries by Quiz
-all_question_results %>% 
+gradebook_summary <- all_question_results %>% 
   group_by(user_display_name, 
            quiz_index) %>% 
   summarize(total_attempts = n(), 
             correct_attempts = sum(correct)) %>% 
   group_by(quiz_index) %>% 
   mutate(fraction_correct = correct_attempts / total_attempts, 
-         fraction_attempted = total_attempts/max(total_attempts)) %>% 
-  View()
+         fraction_attempted = total_attempts/max(total_attempts)) 
+gradebook_summary %>% View()
 
+# Write Output
 
+write_csv(gradebook_summary, "")
